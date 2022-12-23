@@ -88,6 +88,99 @@ class Heap {
     }
     return null;
   }
+
+  remove() {
+    let deletedNode = null;
+
+    if (this.lastInsertedNode === this.root) {
+      deletedNode = this.root;
+      this.root = null;
+      this.lastInsertedNode = null;
+      return deletedNode;
+    }
+
+    const prevLastInsertedNode = this.getNewLastInsertedNode();
+    const tempData = this.root.getData();
+    this.root.setData(this.lastInsertedNode.getData());
+    this.lastInsertedNode.setData(tempData);
+
+    if (this.lastInsertedNode.getParent().getLeftSubTree() === this.lastInsertedNode) {
+      this.lastInsertedNode.getParent().setLeftSubTree(null);
+    } else {
+      this.lastInsertedNode.getParent().setRightSubTree(null);
+    }
+
+    this.lastInsertedNode.setParent(null);
+    deletedNode = this.lastInsertedNode;
+    this.lastInsertedNode = prevLastInsertedNode;
+
+    let current = this.root;
+    do {
+      const higherChild = this.getHigherPriorityChild(current.getLeftSubTree(), current.getRightSubTree());
+      if (higherChild === null) {
+        break;
+      } else if (this.isBigPriority(current.getData(), higherChild.getData()) === false) {
+        const tempData = current.getData();
+        current.setData(higherChild.getData());
+        higherChild.setData(tempData);
+        current = higherChild;
+      } else {
+        break;
+      }
+    } while (current.getLeftSubTree() !== null || current.getRightSubTree() !== null)
+
+    return deletedNode;
+  }
+
+  getHigherPriorityChild(left, right) {
+    if (left === null) {
+      return right;
+    }
+
+    if (right === null) {
+      return left;
+    }
+    
+    if (this.isBigPriority(left.getData(), right.getData())) {
+      return left;
+    }
+
+    return right;
+  } 
+
+  getNewLastInsertedNode() {
+    let prevLastInsertedNode = null;
+
+    if (this.lastInsertedNode === this.lastInsertedNode.getParent().getLeftSubTree()) {
+      let current = this.lastInsertedNode;
+      let firstLeftSibling = null;
+      while (current.getParent().getParent() !== null) {
+        current = current.getParent();
+        firstLeftSibling = this.getLeftSibling(current);
+        if (firstLeftSibling !== null) {
+          break;
+        }
+      }
+
+      if (firstLeftSibling !== null) {
+        while (firstLeftSibling.getRightSubTree() !== null) {
+          firstLeftSibling = firstLeftSibling.getRightSubTree();
+        }
+
+        prevLastInsertedNode = firstLeftSibling;
+      } else {
+        current = this.root;
+        while (current.getRightSubTree() !== null) {
+          current = current.getRightSubTree();
+        }
+        prevLastInsertedNode = current;
+      }
+    } else {
+      prevLastInsertedNode = this.lastInsertedNode.getParent().getLeftSubTree();
+    }
+
+    return prevLastInsertedNode;
+  }
 }
 
 let heap = new Heap();
@@ -99,4 +192,9 @@ heap.insert(7);
 heap.insert(1);
 
 heap.root.inOrderTraversal(heap.root);
+console.log(heap.root);
+
+console.log('==== remove ====');
+
+console.log(heap.remove());
 console.log(heap.root);
