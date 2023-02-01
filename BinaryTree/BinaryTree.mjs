@@ -1,35 +1,35 @@
 class BinaryTree{
-  constructor(data, leftTree = null, rightTree = null){
+  constructor(data, leftTree = null, rightTree = null) {
     this.data = data;
     this.leftSubTree = leftTree;
     this.rightSubTree = rightTree;
   }
 
-  getData(){
+  getData() {
     return this.data;
   }
 
-  setData(data){
+  setData(data) {
     this.data = data;
   }
 
-  getLeftSubTree(){
+  getLeftSubTree() {
     return this.leftSubTree;
   }
 
-  getRightSubTree(){
+  getRightSubTree() {
     return this.rightSubTree;
   }
 
-  setLeftSubTree(tree){
+  setLeftSubTree(tree) {
     this.leftSubTree = tree;
   }
 
-  setRightSubTree(tree){
+  setRightSubTree(tree) {
     this.rightSubTree = tree;
   }
 
-  preOrderTraversal(tree){
+  preOrderTraversal(tree) {
     if(tree === null) return;
 
     console.log(tree.data);
@@ -37,7 +37,7 @@ class BinaryTree{
     this.preOrderTraversal(tree.getRightSubTree());
   }
 
-  inOrderTraversal(tree){
+  inOrderTraversal(tree) {
     if(tree === null) return;
 
     this.inOrderTraversal(tree.getLeftSubTree());
@@ -45,12 +45,24 @@ class BinaryTree{
     this.inOrderTraversal(tree.getRightSubTree());
   }
 
-  postOrderTraversal(tree){
+  postOrderTraversal(tree) {
     if(tree == null) return;
 
     this.postOrderTraversal(tree.getLeftSubTree());
     this.postOrderTraversal(tree.getRightSubTree());
     console.log(tree.data);
+  }
+
+  removeLeftSubTree() {
+    const deletingNode = this.getLeftSubTree();
+    this.setLeftSubTree(null);
+    return deletingNode;
+  }
+
+  removeRightSubTree() {
+    const deletingNode = this.getRightSubTree();
+    this.setRightSubTree(null);
+    return deletingNode;
   }
 }
 
