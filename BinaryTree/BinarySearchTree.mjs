@@ -50,6 +50,80 @@ class BinarySearchTree {
 
     return null;
   }
+
+  remove(targetData) {
+    const fakeParentNode = new BinaryTree(0);
+    fakeParentNode.setRightSubTree(this.root);
+
+    let parentNode = fakeParentNode;
+    let currentNode = this.root;
+    let deletingNode = null;
+
+    while(currentNode !== null && currentNode.getData() !== targetData) {
+      parentNode = currentNode;
+
+      if (currentNode.getData() > targetData) {
+        currentNode = currentNode.getLeftSubTree();
+      } else if (currentNode.getData() < targetData) {
+        currentNode = currentNode.getRightSubTree();
+      }
+    }
+
+    if (currentNode === null) return;
+
+    deletingNode = currentNode;
+
+    if(deletingNode.getLeftSubTree() === null && deletingNode.getRightSubTree() === null){
+      // 자식 노드가 없을 때
+      if (parentNode.getLeftSubTree() === deletingNode) {
+        parentNode.removeLeftSubTree();
+      } else {
+        parentNode.removeRightSubTree();
+      }
+    } else if (deletingNode.getLeftSubTree() === null || deletingNode.getRightSubTree() === null) {
+      // 자식 노드가 하나만 있을 때
+      let deletingNodeChild;
+
+      if (deletingNode.getLeftSubTree() !== null) {
+        deletingNodeChild = deletingNode.getLeftSubTree();
+      } else {
+        deletingNodeChild = deletingNode.getRightSubTree();
+      }
+
+      if (parentNode.getLeftSubTree() === deletingNode) {
+        parentNode.setLeftSubTree(deletingNodeChild);
+      } else {
+        parentNode.setRightSubTree(deletingNodeChild);
+      }
+    }else{
+      // 자식 노드가 양쪽 다 있을 때
+      let replacingNode = deletingNode.getLeftSubTree();
+      let replacingNodeParent = deletingNode;
+
+      while(replacingNode.getRightSubTree() !== null) {
+        replacingNodeParent = replacingNode;
+        replacingNode = replacingNode.getRightSubTree();
+      }
+
+      const deletingNodeData = deletingNode.getData();
+      deletingNode.setData(replacingNode.getData());
+
+      if (replacingNodeParent.getLeftSubTree() === replacingNode) {
+        replacingNodeParent.setLeftSubTree(replacingNode.getLeftSubTree());
+      } else {
+        replacingNodeParent.setRightSubTree(replacingNode.getLeftSubTree());
+      }
+
+      deletingNode = replacingNode;
+      deletingNode.setData(deletingNodeData);
+    }
+
+    if (fakeParentNode.getRightSubTree() !== this.root) {
+      this.root = fakeParentNode.getRightSubTree();
+    }
+
+    return deletingNode;
+  }
 }
 
 const binarySearchTree = new BinarySearchTree();
@@ -75,3 +149,6 @@ console.log(binarySearchTree.search(6));
 
 console.log('===== search 1 =====');
 console.log(binarySearchTree.search(1));
+
+binarySearchTree.remove(10);
+binarySearchTree.root.inOrderTraversal(binarySearchTree.root);
