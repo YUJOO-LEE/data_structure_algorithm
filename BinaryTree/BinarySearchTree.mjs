@@ -34,6 +34,22 @@ class BinarySearchTree {
       parentNode.setRightSubTree(newNode);
     }
   }
+
+  search(targetData) {
+    let currentNode = this.root;
+
+    while(currentNode !== null) {
+      if (currentNode.getData() === targetData) {
+        return currentNode;
+      } else if (currentNode.getData() > targetData) {
+        currentNode = currentNode.getLeftSubTree();
+      } else if (currentNode.getData() < targetData) {
+        currentNode = currentNode.getRightSubTree();
+      }
+    }
+
+    return null;
+  }
 }
 
 const binarySearchTree = new BinarySearchTree();
@@ -53,3 +69,9 @@ binarySearchTree.insert(33);
 binarySearchTree.insert(35);
 binarySearchTree.insert(37);
 binarySearchTree.root.inOrderTraversal(binarySearchTree.root);
+
+console.log('===== search 6 =====');
+console.log(binarySearchTree.search(6));
+
+console.log('===== search 1 =====');
+console.log(binarySearchTree.search(1));
